@@ -1,14 +1,26 @@
-// Define channels for each part of the pipeline
-params.samplesheet = "/Users/keithmitchell/Desktop/Repositories/nmspipeline/NeuroMabSeq/SampleSheet copy.tsv"
-params.TSO_demux_primers = "/Users/keithmitchell/Desktop/Repositories/nmspipeline/TSO_demux_primers.csv"
-params.baseDir = "/Users/keithmitchell/Desktop/Repositories/nmspipeline/01-Processing/"
-params.mountDir = "/nmspipeline/"
-params.rawDataDir = "/Users/keithmitchell/Desktop/Repositories/nmspipeline/00-RawData/"
-params.resourceDir = "/Users/keithmitchell/Desktop/Repositories/nmspipeline/resources/"
+
+// params for pipeline setup (resources distributed for plates in mount dir)
+params.repobase = "/Users/keithmitchell/Desktop/Repositories/clonalvdjseq-uc/clonalvdjseq"
+params.resourcesDir = params.repobase + "/resources"
+params.samplesheet = params.resourcesDir + "/SampleSheet copy.tsv"
+params.TSO_demux_primers = params.resourcesDir + "/TSO_demux_primers.csv"
+params.baseDir = params.repobase + "/01-Processing"
+params.hcPrimers = params.resourcesDir + "/hc_primers.fasta"
+params.lcPrimers = params.resourcesDir + "/lc_primers.fasta"
+params.rawDataDir = params.repobase + "/00-RawData"
+
+
+// mounting params to use in containers
+params.mountDir = "/nmspipeline"
+params.processingDir = params.mountDir + "/01-Processing"
+
+
+//generaal options
 params.htstreamOverwrite = false
 params.dada2Overwrite = false
-params.hcPrimers = "/Users/keithmitchell/Desktop/Repositories/nmspipeline/resources/hc_primers.fasta"
-params.lcPrimers = "/Users/keithmitchell/Desktop/Repositories/nmspipeline/resources/lc_primers.fasta"
+params.help = false
+
+
 
 nextflow.enable.dsl=2
 
@@ -49,7 +61,7 @@ process setupPipeline {
     """
     RAW_DATA_DIR=${params.rawDataDir}
     BASE_DIR=${params.baseDir}/${plate}
-    NMSEQ_DIR=${params.nmseqDir}
+    NMSEQ_DIR=${params.resourcesDir}
     echo "Setting up pipeline for ${plate}"
     mkdir -p \$BASE_DIR/00-RawData/
     mkdir -p \$BASE_DIR/01-PrimerTrimReport/
@@ -93,7 +105,7 @@ process runHTStream {
 
     script:
     """
-    BASE_DIR='${params.mountDir}/01-Processing/${plate}'
+    BASE_DIR='${params.processingDir}/${plate}'
     RAW_DATA_DIR="\${BASE_DIR}/00-RawData"
     LOG_FILE="\${BASE_DIR}/01-PrimerTrim/${TSOBarcode}_${Target_Primer}.log"
     PREFIX="\${BASE_DIR}/01-PrimerTrim/${TSOBarcode}_${Target_Primer}"
@@ -141,13 +153,13 @@ process dada2ASVs {
 
     script:
     """
-    BASE_DIR='${params.baseDir}/${plate}'
+    BASE_DIR='${params.processingDir}/${plate}'
     REPORT_FILE="\${BASE_DIR}/02-Results/02-Hybridoma-DADA2-analysis.html"
 
     if [ ${params.dada2Overwrite} == "true" ] || [ ! -f "\${REPORT_FILE}" ]; then
         echo "Generating report for ${plate}"
         Rscript -e "plate='${plate}';submission='${submissionID}';rmarkdown::render('\${BASE_DIR}/02-Results/02-Hybridoma-DADA2-analysis.RMD')"
-        cp \$BASE_DIR/02-Results/02-Hybridoma-DADA2-analysis.html ${params.baseDir}/02-Reporting/${plate}_report.html
+        cp \$BASE_DIR/02-Results/02-Hybridoma-DADA2-analysis.html ${params.mountDir}/02-Reporting/${plate}_report.html
     else
         echo "DADA2 report already exists. Skipping processing."
     fi
@@ -162,7 +174,7 @@ process aggregateResults {
 
     script:
     """
-    Rscript -e "rmarkdown::render('${params.baseDir}/02-Reporting/analyze_plates.rmd')"
+    Rscript -e "rmarkdown::render('${params.mountDir}/02-Reporting/analyze_plates.rmd')"
     """
 }
 
@@ -180,14 +192,21 @@ workflow {
     combinedData = setupComplete.combine(TSOdemux)
     htsResults = runHTStream(combinedData)
 
-    groupedByPlate = htsResults.groupTuple(by: [0, 1, 2, 3]).collect()
+    groupedByPlate = htsResults.groupTuple(by: [0, 1, 2, 3])
     groupedByPlate.subscribe { groupedData ->
         println "Grouped data: ${groupedData}"
     }
 
-    asvsGenerated = dada2ASVs(groupedByPlate)
+    asvsGenerated = dada2ASVs(groupedByPlate).groupTuple(by: [0, 1, 2, 3])
 
     asvsGenerated.subscribe { asvs ->
         println "ASVs generated: ${asvs}"
     }
+
+    // aggregated = aggregateResults(asvsGenerated)
+
+    // aggregated.subscribe { result ->
+    //     println "Aggregated results: ${result}"
+    // }
+
 }

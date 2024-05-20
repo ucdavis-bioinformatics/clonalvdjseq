@@ -1,0 +1,8 @@
+.nextflow
+.nextflow*
+.nextflow.log*
+.nextflow/*
+01-Processing/*
+01-Processing/*/*
+01-Processing/*/*/*
+01-Processing/*/*/*/*

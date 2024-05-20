@@ -153,4 +153,4 @@ You can cite the related publication as follows:
 - make sure the reporting files in there for example outputs
 - add conda envs
 - compare with files on cluster just to be sure
-- 
+- make sure output isnt tied to being put out in just this directory - lots of cleanaing of the params that go into files to make it more universal/flexbile
