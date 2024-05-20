@@ -30,7 +30,6 @@
    - **Sample Inference**: Runs the core DADA2 algorithm to infer the sample composition by distinguishing between real biological variants and sequencing errors.
    - **Merge Pairs**: Combines forward and reverse reads to reconstruct the full-length variants, crucial for antibody sequencing.
    - **Remove Chimeras**: Identifies and removes chimeric sequences that can result from PCR artifacts, ensuring the purity of variant data.
-   - **Assign Taxonomy** (optional): Annotates sequences based on known databases, providing preliminary insights into the potential functionality and characteristics of the antibodies.
 
 4. **Aggregate Results and Generate Reports**: Compiles results from all processed plates and generates comprehensive analysis reports using R Markdown. This final step provides a summarized view of the findings, allowing for easy interpretation and further research or development activities.
 
