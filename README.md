@@ -1,12 +1,8 @@
 # ![nf-core/clonalvdjseq](docs/images/nf-core-clonalvdjseq_logo_light.png#gh-light-mode-only) ![nf-core/clonalvdjseq](docs/images/nf-core-clonalvdjseq_logo_dark.png#gh-dark-mode-only)
 
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.00000000-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.00000000)
-[![GitHub Actions Linting Status](https://github.com/nf-core/clonalvdjseq/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/clonalvdjseq/actions?query=workflow%3A%22nf-core+linting%22)
-[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
-[![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/nf-core/clonalvdjseq)
-[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23clonalvdjseq-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/clonalvdjseq)
 
 
 ## Pipeline Summary
