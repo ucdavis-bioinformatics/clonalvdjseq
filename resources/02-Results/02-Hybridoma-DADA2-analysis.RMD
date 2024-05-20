@@ -31,7 +31,7 @@ library(stringr)
 outp <- paste("/nmspipeline/01-Processing/", plate, "/02-Results/", sep='')
 # submission <- '9468dd86bf4dfd8'
 #plate <- "TRIMMER0097_P86"
-SMART_index_path <- "/nmspipeline/NeuroMabSeq/SMARTindex_well.tsv"
+SMART_index_path <- "/nmspipeline/resources/SMARTindex_well.tsv"
 
 #outp <- "./"
 #SMART_index_path <- "./SMARTindex_well.tsv"

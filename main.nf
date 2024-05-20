@@ -20,7 +20,7 @@ params.htstreamOverwrite = false
 params.dada2Overwrite = false
 params.help = false
 
-
+//TODO i dont think the TSO demux primers or barcodes are handled in dada2 well yet
 
 nextflow.enable.dsl=2
 
@@ -158,7 +158,7 @@ process dada2ASVs {
 
     if [ ${params.dada2Overwrite} == "true" ] || [ ! -f "\${REPORT_FILE}" ]; then
         echo "Generating report for ${plate}"
-        Rscript -e "plate='${plate}';submission='${submissionID}';rmarkdown::render('\${BASE_DIR}/02-Results/02-Hybridoma-DADA2-analysis.RMD')"
+        Rscript -e "plate='${plate};mountdir='${params.mountDir}';procdir='${params.processingDir}';submission='${submissionID}';rmarkdown::render('\${BASE_DIR}/02-Results/02-Hybridoma-DADA2-analysis.RMD')"
         cp \$BASE_DIR/02-Results/02-Hybridoma-DADA2-analysis.html ${params.mountDir}/02-Reporting/${plate}_report.html
     else
         echo "DADA2 report already exists. Skipping processing."
